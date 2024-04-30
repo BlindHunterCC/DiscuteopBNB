@@ -7,6 +7,7 @@ from typing import Union
 
 from eth_account import Account
 from web3 import AsyncWeb3, AsyncHTTPProvider
+from asyncio.windows_events import WindowsSelectorEventLoopPolicy
 from loguru import logger
 
 logger.remove()
@@ -44,7 +45,7 @@ async def check_balance(address,addresses_has_no_bnb):
     account_balance = await w3.eth.get_balance(w3.to_checksum_address(address))
     account_balance = w3.from_wei(account_balance, 'ether')
     if account_balance < 0.0005:
-        addresses_has_no_bnb.append(address)
+        addresses_has_no_bnb.append(w3.to_checksum_address(address))
     logger.info(f" Account {address} balance result: {account_balance}")
     return account_balance, f"{address},{account_balance}"
 
@@ -54,7 +55,7 @@ async def distribute(addresses,owner_key):
     contract = w3.eth.contract(address=w3.to_checksum_address(contract_address), abi=abi)
     contract_balance = await w3.eth.get_balance(w3.to_checksum_address(contract_address))
     logger.info(f" Contract balance: {w3.from_wei(contract_balance, 'ether')} BNB")
-    amounts = [w3.to_wei(round(random.uniform(0.0012, 0.002), 5), 'ether') for _ in addresses]
+    amounts = [w3.to_wei(round(random.uniform(0.00012, 0.0002), 5), 'ether') for _ in addresses]
     # amounts = [w3.to_wei(0.003, 'ether') for _ in addresses]
     tx = {
         "from": owner_address,
@@ -137,4 +138,5 @@ async def main():
 
 
 if __name__ == '__main__':
+    asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())
     asyncio.run(main())
