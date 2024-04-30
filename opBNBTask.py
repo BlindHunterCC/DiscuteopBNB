@@ -109,7 +109,7 @@ async def distribute(addresses,owner_key):
 
 async def process_task(semaphore, addresses, owner_keys,success_file, fail_file):
     addresses = [address.strip() for address in list(addresses)]
-    addresses = [addresses[i:i+3] for i in range(0,len(addresses),3)]    
+    addresses = [addresses[i:i+4] for i in range(0,len(addresses),4)]    
     async with semaphore:
         for recaddresses,owner_key in zip(addresses,owner_keys):
             owner_key = owner_key.strip()
