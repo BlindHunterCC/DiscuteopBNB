@@ -120,9 +120,9 @@ async def process_task(semaphore, addresses, owner_keys,success_file, fail_file)
                 success_file.write(f'{log}\n')
                 success_file.flush()
             await distribute(addresses_has_no_bnb,owner_key)
-            addresses_has_no_bnb = []
+            addresses_has_no_bnb_res =  []
             for address in addresses_has_no_bnb:
-                    account_balance, log = await check_balance(address,addresses_has_no_bnb)
+                    account_balance, log = await check_balance(address,addresses_has_no_bnb_res)
                     success_file.write(f'{log}\n')
                     success_file.flush()
 
