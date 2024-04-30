@@ -110,7 +110,7 @@ async def distribute(addresses,owner_key):
 
 async def process_task(semaphore, addresses, owner_keys,success_file, fail_file):
     addresses = [address.strip() for address in list(addresses)]
-    addresses = [addresses[i:i+4] for i in range(0,len(addresses),4)]    
+    addresses = [addresses[i:i+5] for i in range(0,len(addresses),5)]    
     async with semaphore:
         for recaddresses,owner_key in zip(addresses,owner_keys):
             owner_key = owner_key.strip()
@@ -120,8 +120,9 @@ async def process_task(semaphore, addresses, owner_keys,success_file, fail_file)
                 success_file.write(f'{log}\n')
                 success_file.flush()
             await distribute(addresses_has_no_bnb,owner_key)
+            addresses_has_no_bnb = []
             for address in addresses_has_no_bnb:
-                    account_balance, log = await check_balance(address)
+                    account_balance, log = await check_balance(address,addresses_has_no_bnb)
                     success_file.write(f'{log}\n')
                     success_file.flush()
 
